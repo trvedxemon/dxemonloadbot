@@ -10,9 +10,13 @@ Preview: https://t.me/dxemonloadbot
               BASICS
 ------------------------------------
 Written in Python 3 using aiogram v3.1, ffmpeg-python v0.2.0 and pytube v15.0
+
 config.py - constants and details
+
 ytloader.py - main worker
+
 /tmp - default folder for loading files from YouTube
+
 /tmp/merged - folder for processed videos
 
 ------------------------------------
