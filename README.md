@@ -20,9 +20,9 @@ ytloader.py - main worker
  ------------------------------------
  - Create bot via BotFather, then add API Token to config.py instead of placeholder
  - Install libraries:
- - - pip install aiogram
- - - pip install pytube
- - - pip install ffmpeg-python
+ -- pip install aiogram
+ -- pip install pytube
+ -- pip install ffmpeg-python
  - Run the bot.py
  ------------------------------------
             OTHER INFO
