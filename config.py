@@ -1,7 +1,7 @@
 API_TOKEN = "XXXXXXXXXX:XxxxXXXXXXxxXXxxXXXXXXxXxXxXXxxxxX"
 filepath = "tmp/"
 merged_filepath = filepath + "merged/"
-infomsg = """*DXEMONLOAD BOT*  _v0\.1\.0_
+infomsg = """*DXEMONLOAD BOT*  _v0\.1\.1_
 
 Send a YouTube video URL to this bot to download it in any resolution or as audio
 

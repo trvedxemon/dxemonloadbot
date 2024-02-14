@@ -1,4 +1,4 @@
-# DXEMONLOAD Bot v0.1.0
+# DXEMONLOAD Bot v0.1.1
 # Copyright ©️ Tim Nagorskikh, 2024
 # Original: https://github.com/trvedxemon/dxemonloadbot
 # Preview: https://t.me/dxemonloadbot
@@ -37,7 +37,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, FSInputFile, CallbackQuery, URLInputFile
 
 from config import API_TOKEN, infomsg, filepath
-from ytloader import get_yt_name, get_yt_img, get_yt_res, ytdownloadaudio, ytdownloadvid
+from ytloader import get_yt_name, get_yt_img, get_yt_res, ytdownloadaudio, ytdownloadvid, get_yt_shorts
 
 bot = Bot(API_TOKEN)
 dp = Dispatcher()
@@ -60,7 +60,7 @@ async def callback_handler(call: CallbackQuery):
         await bot.send_message(chat_id=usid, text="Downloading video, please wait...")
         path = ytdownloadvid(link, itag, audio)
         vid = FSInputFile(path)
-        await bot.send_video(usid, vid)
+        await bot.send_video(usid, vid, caption="via @dxemonloadbot")
         os.remove(path)
     elif type == "audio":
         await call.answer()
@@ -68,9 +68,8 @@ async def callback_handler(call: CallbackQuery):
         filename = ytdownloadaudio(link, itag)
         path = filepath + filename
         aud = FSInputFile(path)
-        await bot.send_audio(usid, aud)
+        await bot.send_audio(usid, aud, caption="via @dxemonloadbot")
         os.remove(path)
-
 
 
 @dp.message(CommandStart())
@@ -88,11 +87,24 @@ async def command_help_handler(message: Message) -> None:
 
 @dp.message()
 async def command_help_handler(message: Message) -> None:
-    thumbnail = URLInputFile(get_yt_img(message.text))
-    usid = message.from_user.id
-    name = get_yt_name(message.text)
-    kb = get_yt_res(message.text)
-    await message.answer_photo(thumbnail, name, reply_markup=kb)
+    if "instagram" in message.text:
+        await message.answer("Sorry, Instagram is not yet supported 🙁")
+    elif "youtu" in message.text:
+        if "shorts" in message.text:
+            await message.answer("Downloading YT Shorts, please wait...")
+            name = get_yt_shorts(message.text)
+            path = filepath + name
+            short = FSInputFile(path)
+            await message.answer_video(short, caption="via @dxemonloadbot")
+            os.remove(path)
+        else:
+            thumbnail = URLInputFile(get_yt_img(message.text))
+            usid = message.from_user.id
+            name = get_yt_name(message.text)
+            kb = get_yt_res(message.text)
+            await message.answer_photo(thumbnail, name, reply_markup=kb)
+    else:
+        await message.answer("Sorry, the link is not supported 🙁")
 
 
 async def main() -> None:

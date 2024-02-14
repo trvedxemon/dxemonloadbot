@@ -71,3 +71,14 @@ def get_yt_res(link):
         btn.row(InlineKeyboardButton(text=btnname, callback_data=callback))
         builder.attach(btn)
     return builder.as_markup()
+
+
+def get_yt_shorts(link):
+    yt = YouTube(link)
+    yt = yt.streams.get_highest_resolution()
+    name = yt.default_filename
+    try:
+        yt.download(output_path=filepath)
+    except:
+        print("An error has occurred")
+    return name
