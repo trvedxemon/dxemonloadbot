@@ -14,7 +14,8 @@ config.py - constants and details
 ytloader.py - main worker
 /tmp - default folder for loading files from YouTube
 /tmp/merged - folder for processed videos
- ------------------------------------
+
+------------------------------------
             INSTALLATION
  ------------------------------------
  - Create bot via BotFather, then add API Token to config.py instead of placeholder
