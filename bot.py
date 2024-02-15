@@ -5,9 +5,10 @@
 # ------------------------------------
 #               BASICS
 # ------------------------------------
-# Written in Python 3 using aiogram v3.1, ffmpeg-python v0.2.0 and pytube v15.0
+# Written in Python 3 using aiogram 3.1, ffmpeg-python 0.2.0, pydub 0.25.1 and pytube 15.0
 # config.py - constants and details
 # ytloader.py - main worker
+# muscoder.py - music transcoder
 # /tmp - default folder for loading files from YouTube
 # /tmp/merged - folder for processed videos
 # ------------------------------------
@@ -18,6 +19,7 @@
 # - - pip install aiogram
 # - - pip install pytube
 # - - pip install ffmpeg-python
+# - - pip install pydub
 # - Run the bot.py
 # ------------------------------------
 #            OTHER INFO
@@ -37,6 +39,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, FSInputFile, CallbackQuery, URLInputFile
 
 from config import API_TOKEN, infomsg, filepath
+from muscoder import rebuild_webm
 from ytloader import get_yt_name, get_yt_img, get_yt_res, ytdownloadaudio, ytdownloadvid, get_yt_shorts
 
 bot = Bot(API_TOKEN)
@@ -67,6 +70,7 @@ async def callback_handler(call: CallbackQuery):
         await bot.send_message(chat_id=usid, text="Downloading audio, please wait...")
         filename = ytdownloadaudio(link, itag)
         path = filepath + filename
+        path = rebuild_webm(path)
         aud = FSInputFile(path)
         await bot.send_audio(usid, aud, caption="via @dxemonloadbot")
         os.remove(path)
@@ -90,19 +94,19 @@ async def command_help_handler(message: Message) -> None:
     if "instagram" in message.text:
         await message.answer("Sorry, Instagram is not yet supported 🙁")
     elif "youtu" in message.text:
-        if "shorts" in message.text:
-            await message.answer("Downloading YT Shorts, please wait...")
-            name = get_yt_shorts(message.text)
-            path = filepath + name
-            short = FSInputFile(path)
-            await message.answer_video(short, caption="via @dxemonloadbot")
-            os.remove(path)
+        if "?si=" in message.text:
+            msgtext = message.text.split("?si=")
+            msgtext = msgtext[0]
+        elif "&list=" in message.text:
+            msgtext = message.text.split("&list=")
+            msgtext = msgtext[0]
         else:
-            thumbnail = URLInputFile(get_yt_img(message.text))
-            usid = message.from_user.id
-            name = get_yt_name(message.text)
-            kb = get_yt_res(message.text)
-            await message.answer_photo(thumbnail, name, reply_markup=kb)
+            msgtext = message.text
+        thumbnail = URLInputFile(get_yt_img(msgtext))
+        usid = message.from_user.id
+        name = get_yt_name(msgtext)
+        kb = get_yt_res(msgtext)
+        await message.answer_photo(thumbnail, name, reply_markup=kb)
     else:
         await message.answer("Sorry, the link is not supported 🙁")
 

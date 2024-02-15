@@ -4,6 +4,7 @@ from aiogram.types import InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from pytube import YouTube
 import ffmpeg
+from pytube.exceptions import AgeRestrictedError
 
 from config import filepath, merged_filepath
 
@@ -23,6 +24,8 @@ def ytdownloadvid(link, itag, audio):
         ffmpeg.concat(video, audio, v=1, a=1).output(out).run()
         os.remove(filename1)
         os.remove(filename2)
+    except AgeRestrictedError:
+        return "Age restricted"
     except:
         return "Nothing"
     return out

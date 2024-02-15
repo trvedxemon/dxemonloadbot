@@ -1,4 +1,4 @@
-DXEMONLOAD Bot v0.1.0
+DXEMONLOAD Bot v0.1.2
 
 Copyright ©️ Tim Nagorskikh, 2024
 
@@ -9,11 +9,13 @@ Preview: https://t.me/dxemonloadbot
 ------------------------------------
               BASICS
 ------------------------------------
-Written in Python 3 using aiogram v3.1, ffmpeg-python v0.2.0 and pytube v15.0
+Written in Python 3 using aiogram 3.1, ffmpeg-python 0.2.0, pydub 0.25.1 and pytube 15.0
 
 config.py - constants and details
 
 ytloader.py - main worker
+
+muscoder.py - music transcoder
 
 /tmp - default folder for loading files from YouTube
 
@@ -27,6 +29,7 @@ ytloader.py - main worker
  - - pip install aiogram
  - - pip install pytube
  - - pip install ffmpeg-python
+ - - pip install pydub
  - Run the bot.py
  ------------------------------------
             OTHER INFO
