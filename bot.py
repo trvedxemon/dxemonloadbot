@@ -1,4 +1,4 @@
-# DXEMONLOAD Bot v0.1.1
+# DXEMONLOAD Bot v0.1.2
 # Copyright ©️ Tim Nagorskikh, 2024
 # Original: https://github.com/trvedxemon/dxemonloadbot
 # Preview: https://t.me/dxemonloadbot
@@ -63,7 +63,7 @@ async def callback_handler(call: CallbackQuery):
         await bot.send_message(chat_id=usid, text="Downloading video, please wait...")
         path = ytdownloadvid(link, itag, audio)
         vid = FSInputFile(path)
-        await bot.send_video(usid, vid, caption="via @dxemonloadbot")
+        await bot.send_video(usid, vid, caption=f"[original]({link}) \| [via](https://t.me/dxemonloadbot)", parse_mode='MarkdownV2')
         os.remove(path)
     elif type == "audio":
         await call.answer()
@@ -72,7 +72,7 @@ async def callback_handler(call: CallbackQuery):
         path = filepath + filename
         path = rebuild_webm(path)
         aud = FSInputFile(path)
-        await bot.send_audio(usid, aud, caption="via @dxemonloadbot")
+        await bot.send_audio(usid, aud, caption=f"[original]({link}) \| [via](https://t.me/dxemonloadbot)", parse_mode='MarkdownV2')
         os.remove(path)
 
 
