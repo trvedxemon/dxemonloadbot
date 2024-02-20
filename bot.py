@@ -1,4 +1,4 @@
-# DXEMONLOAD Bot v0.1.2
+# DXEMONLOAD Bot v0.1.3
 # Copyright ©️ Tim Nagorskikh, 2024
 # Original: https://github.com/trvedxemon/dxemonloadbot
 # Preview: https://t.me/dxemonloadbot
@@ -33,20 +33,17 @@ import asyncio
 import logging
 import os
 import sys
-import string
 from aiogram import Bot, Dispatcher, Router
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, FSInputFile, CallbackQuery, URLInputFile
 
-from config import API_TOKEN, infomsg, filepath
+from config import API_TOKEN, infomsg, filepath, bot_url
 from muscoder import rebuild_webm
-from ytloader import get_yt_name, get_yt_img, get_yt_res, ytdownloadaudio, ytdownloadvid, get_yt_shorts
+from ytloader import get_yt_name, get_yt_img, get_yt_res, ytdownloadaudio, ytdownloadvid
 
 bot = Bot(API_TOKEN)
 dp = Dispatcher()
 rt = Router()
-link: string
-msg: Message
 
 
 @dp.callback_query()
@@ -62,18 +59,26 @@ async def callback_handler(call: CallbackQuery):
         await call.answer()
         await bot.send_message(chat_id=usid, text="Downloading video, please wait...")
         path = ytdownloadvid(link, itag, audio)
-        vid = FSInputFile(path)
-        await bot.send_video(usid, vid, caption=f"[original]({link}) \| [via](https://t.me/dxemonloadbot)", parse_mode='MarkdownV2')
-        os.remove(path)
+        if path == "Nothing":
+            await bot.send_message(chat_id=usid, text="Sorry, video could not be downloaded")
+        elif path == "Age restricted":
+            await bot.send_message(chat_id=usid, text="Sorry, video is age restricted")
+        else:
+            vid = FSInputFile(path)
+            await bot.send_video(usid, vid, caption=f"[original]({link}) \| [via]({bot_url})", parse_mode='MarkdownV2')
+            os.remove(path)
     elif type == "audio":
         await call.answer()
         await bot.send_message(chat_id=usid, text="Downloading audio, please wait...")
         filename = ytdownloadaudio(link, itag)
-        path = filepath + filename
-        path = rebuild_webm(path)
-        aud = FSInputFile(path)
-        await bot.send_audio(usid, aud, caption=f"[original]({link}) \| [via](https://t.me/dxemonloadbot)", parse_mode='MarkdownV2')
-        os.remove(path)
+        if filename == "Nothing":
+            await bot.send_message(chat_id=usid, text="Sorry, audio could not be downloaded")
+        else:
+            path = filepath + filename
+            path = rebuild_webm(path)
+            aud = FSInputFile(path)
+            await bot.send_audio(usid, aud, caption=f"[original]({link}) \| [via]({bot_url})", parse_mode='MarkdownV2')
+            os.remove(path)
 
 
 @dp.message(CommandStart())
@@ -103,10 +108,13 @@ async def command_help_handler(message: Message) -> None:
         else:
             msgtext = message.text
         thumbnail = URLInputFile(get_yt_img(msgtext))
-        usid = message.from_user.id
-        name = get_yt_name(msgtext)
+        name = get_yt_name(msgtext) + """
+
+Note, that bot is limited to 50MB filesize by Telegram API"""
         kb = get_yt_res(msgtext)
         await message.answer_photo(thumbnail, name, reply_markup=kb)
+    elif "spotify" in message.text:
+        await message.answer("Sorry, Spotify is not yet supported 🙁")
     else:
         await message.answer("Sorry, the link is not supported 🙁")
 
