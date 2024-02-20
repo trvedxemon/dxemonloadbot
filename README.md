@@ -1,4 +1,4 @@
-DXEMONLOAD Bot v0.1.2
+DXEMONLOAD Bot
 
 Copyright ©️ Tim Nagorskikh, 2024
 
