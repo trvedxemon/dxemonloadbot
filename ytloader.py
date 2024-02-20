@@ -44,8 +44,6 @@ def ytdownloadaudio(link, itag):
 
 def get_yt_img(link):
     yt = YouTube(link)
-    for stream in yt.streams:
-        print(stream)
     img = yt.thumbnail_url
     return img
 
