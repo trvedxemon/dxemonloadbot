@@ -17,7 +17,7 @@ def ytdownloadvid(link, itag, audio):
         video.download(output_path=filepath)
         audio.download(output_path=filepath)
         filename1 = filepath + video.default_filename
-        filename2 = filepath + video.default_filename
+        filename2 = filepath + audio.default_filename
         out = merged_filepath + video.default_filename
         video = ffmpeg.input(filename1)
         audio = ffmpeg.input(filename2)
